@@ -2,11 +2,12 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import HaberListe from "./HaberListe";
 import { Alert, Spinner } from "react-bootstrap";
+import AramaKutusu from "./AramaKutusu";
 
 function App() {
   const [veri, veriGuncelle] = useState({ hits: [] })
   const [sorgu, sorguGuncelle] = useState("Javascript")
-  const [inputVerisi, inputVerisiGuncelle] = useState("")
+ 
   const [yukleniyor, yukleniyorGuncelle] = useState(false)
   const [hata, hataGuncelle] = useState(false)
 
@@ -16,7 +17,7 @@ function App() {
       yukleniyorGuncelle(true)
 
       try {
-        const sonuc = await fetch("https://hn.algolia2342353.com/api/v1/search?query="+sorgu)
+        const sonuc = await fetch("https://hn.algolia.com/api/v1/search?query="+sorgu)
         const jsSonuc = await sonuc.json()
         veriGuncelle( jsSonuc )
       } catch (error) {
@@ -31,7 +32,7 @@ function App() {
   }, [sorgu] )
 
 
-  function aramaBaslat() {
+  function aramaBaslat(inputVerisi) {
     sorguGuncelle(inputVerisi)
   }
 
@@ -42,10 +43,7 @@ function App() {
 
           <div className="d-flex justify-content-between align-items-center">
             <h1>{sorgu} Haberler</h1> 
-            <div className="d-flex justify-content-between align-items-center"> 
-              <input value={inputVerisi} onChange={(olay)=>inputVerisiGuncelle(olay.target.value)} className="form-control" type="text" placeholder="Arama anahtarı.." /> 
-              <button onClick={aramaBaslat} className="btn btn-success ms-3">Ara</button> 
-            </div>
+            <AramaKutusu aramaBaslat={aramaBaslat} />
           </div>
 
           { hata && <Alert variant="danger">Bir hata oluştu..</Alert> }
